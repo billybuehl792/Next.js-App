@@ -36,7 +36,7 @@ const CardWrapper = async () => {
   );
 };
 
-export const Card = ({
+const Card = ({
   title,
   value,
   type,
@@ -63,4 +63,5 @@ export const Card = ({
   );
 };
 
+export { Card };
 export default CardWrapper;

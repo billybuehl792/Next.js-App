@@ -9,7 +9,7 @@ import {
 } from "./definitions";
 import { formatCurrency } from "./utils";
 
-export const fetchRevenue = async () => {
+const fetchRevenue = async () => {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -28,7 +28,7 @@ export const fetchRevenue = async () => {
   }
 };
 
-export const fetchLatestInvoices = async () => {
+const fetchLatestInvoices = async () => {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
@@ -56,7 +56,7 @@ export const fetchLatestInvoices = async () => {
   }
 };
 
-export const fetchCardData = async () => {
+const fetchCardData = async () => {
   try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
@@ -92,10 +92,7 @@ export const fetchCardData = async () => {
 };
 
 const ITEMS_PER_PAGE = 6;
-export const fetchFilteredInvoices = async (
-  query: string,
-  currentPage: number
-) => {
+const fetchFilteredInvoices = async (query: string, currentPage: number) => {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
@@ -127,7 +124,7 @@ export const fetchFilteredInvoices = async (
   }
 };
 
-export const fetchInvoicesPages = async (query: string) => {
+const fetchInvoicesPages = async (query: string) => {
   try {
     const count = await sql`SELECT COUNT(*)
     FROM invoices
@@ -148,7 +145,7 @@ export const fetchInvoicesPages = async (query: string) => {
   }
 };
 
-export const fetchInvoiceById = async (id: string) => {
+const fetchInvoiceById = async (id: string) => {
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -173,7 +170,7 @@ export const fetchInvoiceById = async (id: string) => {
   }
 };
 
-export const fetchCustomers = async () => {
+const fetchCustomers = async () => {
   try {
     const data = await sql<CustomerField>`
       SELECT
@@ -191,7 +188,7 @@ export const fetchCustomers = async () => {
   }
 };
 
-export const fetchFilteredCustomers = async (query: string) => {
+const fetchFilteredCustomers = async (query: string) => {
   try {
     const data = await sql<CustomersTableType>`
 		SELECT
@@ -222,4 +219,15 @@ export const fetchFilteredCustomers = async (query: string) => {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch customer table.");
   }
+};
+
+export {
+  fetchRevenue,
+  fetchLatestInvoices,
+  fetchCardData,
+  fetchFilteredInvoices,
+  fetchInvoicesPages,
+  fetchInvoiceById,
+  fetchCustomers,
+  fetchFilteredCustomers,
 };
