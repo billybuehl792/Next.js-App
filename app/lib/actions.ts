@@ -4,6 +4,8 @@ import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 export type State = {
   errors?: {
@@ -32,7 +34,33 @@ const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 /**
+ *
+ * @param prevState
+ * @param formData
+ * @returns
+ */
+const authenticate = async (
+  prevState: string | undefined,
+  formData: FormData
+) => {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+};
+
+/**
  * Server action to create an `Invoice`.
+ * @param prevState - Previous state passed by `useActionState`
  * @param formData - Form data submitted by user
  */
 const createInvoice = async (prevState: State, formData: FormData) => {
@@ -75,6 +103,7 @@ const createInvoice = async (prevState: State, formData: FormData) => {
 /**
  * Server action to update an `Invoice`.
  * @param id - Invoice id
+ * @param prevState - Previous state passed by `useActionState`
  * @param formData - Form data submitted by user
  */
 const updateInvoice = async (
@@ -132,4 +161,4 @@ const deleteInvoice = async (id: string) => {
   }
 };
 
-export { createInvoice, updateInvoice, deleteInvoice };
+export { authenticate, createInvoice, updateInvoice, deleteInvoice };
